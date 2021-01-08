@@ -4,6 +4,8 @@ package br.com.alura.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +40,7 @@ public class TopicController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody TopicoForm topico, UriComponentsBuilder uriComponentsBuilder) {
+	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody @Valid TopicoForm topico, UriComponentsBuilder uriComponentsBuilder) {
 		Topico novoTopico = topicoRepository.save(TopicoForm.converter(topico, cursoRepository));
 		
 		URI uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(novoTopico.getId()).toUri();

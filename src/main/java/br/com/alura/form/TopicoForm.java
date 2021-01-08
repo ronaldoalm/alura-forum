@@ -1,13 +1,21 @@
 package br.com.alura.form;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import br.com.alura.model.Curso;
 import br.com.alura.model.Topico;
 import br.com.alura.repository.CursoRepository;
 
 public class TopicoForm {
-
+	
+	@NotNull @NotEmpty @Length(min = 5)
 	private String titulo;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String mensagem;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String nomeCurso;
 	public String getTitulo() {
 		return titulo;
