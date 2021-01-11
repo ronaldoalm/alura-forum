@@ -8,6 +8,10 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,12 +40,22 @@ public class TopicController {
 	@Autowired
 	CursoRepository cursoRepository;
 	
+	
+//	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso,
+//								 @RequestParam(required = true) int page, 
+//								 @RequestParam(required = true) int size,
+//								 @RequestParam(required = true) String order){
+	
 	@GetMapping("/topicos")
-	public List<TopicoDTO> lista(String nomeCurso){
+	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, Pageable pageable){
+		
 		if(nomeCurso == null) {
-			return TopicoDTO.converter(topicoRepository.findAll());
+			Page<Topico> topicos = topicoRepository.findAll(pageable);
+			return TopicoDTO.converter(topicos);
 		}else {
-			return TopicoDTO.converter(topicoRepository.findByCursoNome(nomeCurso));
+			
+			Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso,pageable);
+			return TopicoDTO.converter(topicos);
 		}
 		 
 	}
@@ -78,8 +93,6 @@ public class TopicController {
 			return ResponseEntity.ok(new TopicoDTO(topico));
 		}
 		return ResponseEntity.notFound().build();
-		
-		
 	}
 	
 	@Transactional
@@ -91,7 +104,6 @@ public class TopicController {
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.notFound().build();
-
 	}
 	
 }
