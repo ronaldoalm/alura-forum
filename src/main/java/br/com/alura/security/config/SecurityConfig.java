@@ -1,5 +1,6 @@
 package br.com.alura.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,17 +8,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity // habilita modo de seguraça de aplicacao
 @Configuration // Startup do projeto sprig carrega as configs
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
-
+	
+	@Autowired
+	private AutenticacaoService autenticacaoService;
+	
 	//configuraçoes de autenticação
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		super.configure(auth);
+		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
+		
 	}
 	
 	// configuração autorização
