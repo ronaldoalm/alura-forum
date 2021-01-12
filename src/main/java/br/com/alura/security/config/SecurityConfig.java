@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.alura.repository.UsuarioRepository;
 
 @EnableWebSecurity // habilita modo de seguraça de aplicacao
 @Configuration // Startup do projeto sprig carrega as configs
@@ -19,6 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private AutenticacaoService autenticacaoService;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	@Autowired
+	private UsuarioRepository UsuarioRepository;
 	
 	@Bean //Spring entende que tem q devolver o authentication manager e aí é possivel injetar no controller.;
 	@Override
@@ -44,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
 		.anyRequest().authenticated()
 		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Avisa pro spring que a autenticaçao será do tipo statelesse nao usará formulario
+		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService,UsuarioRepository), UsernamePasswordAuthenticationFilter.class); //avisa ao spring qual filtro será iniciado antes pois nao dá pra chamar via anotação
 	}
 	
 	// configurações de arquivos estaticos(js, css, imagens, etc..)
