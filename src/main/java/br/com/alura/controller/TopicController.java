@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +32,7 @@ import br.com.alura.repository.CursoRepository;
 import br.com.alura.repository.TopicoRepository;
 
 @RestController
+@RequestMapping("/topicos")
 public class TopicController {
 	
 	@Autowired
@@ -45,7 +47,7 @@ public class TopicController {
 //								 @RequestParam(required = true) int size,
 //								 @RequestParam(required = true) String order){
 	
-	@GetMapping("/topicos")
+	@GetMapping
 	@Cacheable(value = "listaDeTopicos")
 	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, Pageable pageable){
 		
@@ -70,7 +72,7 @@ public class TopicController {
 		return ResponseEntity.created(uri).body(new TopicoDTO(novoTopico));
 	}
 	
-	@GetMapping("/topicos/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<DetalhesTopicoDTO> detalhar(@PathVariable Long id) {
 		// get onde se nao achar um elemento dispara um erro;
 		//Topico topico = topicoRepository.getOne(id);
@@ -86,7 +88,7 @@ public class TopicController {
  	}
 	
 	@Transactional
-	@PutMapping("/topicos/{id}")
+	@PutMapping("/{id}")
 	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id,@RequestBody @Valid AtualizacaoTopicoForm form){
 		Optional<Topico> optional = topicoRepository.findById(id);
@@ -98,7 +100,7 @@ public class TopicController {
 	}
 	
 	@Transactional
-	@DeleteMapping("/topicos/{id}")
+	@DeleteMapping("/{id}")
 	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Long id){
 		Optional<Topico> optional = topicoRepository.findById(id);
