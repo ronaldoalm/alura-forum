@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.alura.model.Usuario;
 import br.com.alura.repository.UsuarioRepository;
+import br.com.alura.service.TokenService;
 // OncePerRequestFilter finltro do spring chamado a cada requisiçao
 public class AutenticacaoViaTokenFilter extends OncePerRequestFilter{
 	
